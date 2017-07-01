@@ -3,6 +3,7 @@ const MAX_ACCELERATION = 500;
 const MIN_ACCELERATION = 0;
 const MIN_MULTIPLIER = 0;
 const MAX_MULTIPLIER = 200;
+const DEBUG = true;
 var _score = 0;
 
 class Main extends Phaser.State {
@@ -44,8 +45,9 @@ class Main extends Phaser.State {
         this.scoreBar = this.add.sprite(420, 265, 'scoreBar');
 
         //Text Initialisation
-        this.accelerationText = this.add.text(50, 50, "Acceleration: 0", { fontSize: '24px', fill: 'red' });
-        this.angleText = this.add.text(50, 75, "Angle: 0", { fontSize: '24px', fill: 'green' });
+        if(DEBUG) this.accelerationText = this.add.text(50, 50, "Acceleration: 0", { fontSize: '24px', fill: 'red' });
+        if(DEBUG) this.angleText = this.add.text(50, 75, "Angle: 0", { fontSize: '24px', fill: 'green' });
+        
         this.scoreText = this.add.text(50, 15, 'Points: 0', { fontSize: '32px', fill: '#ffffff' });    
         this.counterText = this.add.text(200, 15, 'Seconds: 60', { font: "32px", fill: "#ffffff" });
         this.extraSecondsText = this.add.text(375, 15, "+5 Sec", { fontSize: '32px', fill: 'red' });
@@ -55,7 +57,7 @@ class Main extends Phaser.State {
         this.extraSecondsText.visible = false;
         this.player.animations.add('shoot', [0,1,2,3,4,5,0]);
         this.progressBar.animations.add('progress', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0])
-        game.world.bringToTop(ring);
+        this.world.bringToTop(this.ring);
 
         //PHYSICS
         this.physics.arcade.enable(
@@ -179,8 +181,8 @@ class Main extends Phaser.State {
         this.accelerationState = "increase";
         this.angleState = "increase";
 
-        this.accelerationText.setText('Acceleration: ' + this.acceleration);
-        this.angleText.setText('MultiplierX: ' + this.multiplierX + "; MultiplierY:" + this.multiplierY);
+        if(DEBUG) this.accelerationText.setText('Acceleration: ' + this.acceleration);
+        if(DEBUG) this.angleText.setText('MultiplierX: ' + this.multiplierX + "; MultiplierY:" + this.multiplierY);
 
         return { 
             x: velocityX, 
@@ -215,7 +217,7 @@ class Main extends Phaser.State {
             this.accelerationState = "increase";
         }
 
-        this.accelerationText.setText('Acceleration: ' + this.acceleration);
+        if(DEBUG) this.accelerationText.setText('Acceleration: ' + this.acceleration);
         this.progressBar.animations.play("progress", 40, true);
     }
 
@@ -247,7 +249,7 @@ class Main extends Phaser.State {
         }
         
         this.animateAngle(this.multiplierX, this.multiplierY);
-        this.angleText.setText('MultiplierX: ' + this.multiplierX + "; MultiplierY:" + this.multiplierY);
+        if(DEBUG) this.angleText.setText('MultiplierX: ' + this.multiplierX + "; MultiplierY:" + this.multiplierY);
     }
 
     triggerAngleCounter(){
