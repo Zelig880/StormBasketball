@@ -3,15 +3,13 @@ const MAX_ACCELERATION = 500;
 const MIN_ACCELERATION = 0;
 const MIN_MULTIPLIER = 0;
 const MAX_MULTIPLIER = 200;
-
-var ciao = 1.5;
+var _score = 0;
 
 class Main extends Phaser.State {
 
     create() {
         //GLOBAL VARIABLES
         this.cursors;
-        this.score = 0;
         this.scoreText;
         this.isNewBasketball = true;
         this.ballIsShot = false;
@@ -20,24 +18,24 @@ class Main extends Phaser.State {
         this.accelerationState = "increase";
         this.angleCounterStarted = false;
         this.angleState = "increase";
-        this.counter = 60;
+        this.counter = 10;
         this.acceleration = 0;
         this.multiplierX = 1;
         this.multiplierY = 1;
 
         //Static Images
         this.add.image(0, 0, 'sky');
-        this.add.sprite(403,252, 'ring');
+        this.ring = this.add.sprite(403,252, 'ring');
 
         //Actionable Items
-        this.player = this.add.sprite(0, 245, 'player');
-        this.basketball = this.add.sprite(25, 250, 'basketball');
+        this.player = this.add.sprite(0, 345, 'player');
+        this.basketball = this.add.sprite(25, 350, 'basketball');
         this.progressBar = this.add.sprite(15, 15, 'progress');
         this.setBasketballSprite();    
-        this.angleCircle = this.add.graphics(25, 410);
+        this.angleCircle = this.add.graphics(25, 510);
         this.angleCircle.lineStyle(5,0xffd900);
         this.angleCircle.arc(0, 0, 135, this.math.degToRad(270), this.math.degToRad(0), false);
-        this.smallBasketball = this.add.sprite(20, 270, 'smallBasketball');
+        this.smallBasketball = this.add.sprite(20, 370, 'smallBasketball');
 
         //Static Images with Collision
         this.backboard = this.add.sprite(468,150, 'backboard');
@@ -57,7 +55,7 @@ class Main extends Phaser.State {
         this.extraSecondsText.visible = false;
         this.player.animations.add('shoot', [0,1,2,3,4,5,0]);
         this.progressBar.animations.add('progress', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0])
-        
+        game.world.bringToTop(ring);
 
         //PHYSICS
         this.physics.arcade.enable(
@@ -112,7 +110,7 @@ class Main extends Phaser.State {
 
     setBasketballSprite(){
         
-        this.basketballSprite = this.add.sprite(25, 245, 'basketballSprite');
+        this.basketballSprite = this.add.sprite(25, 345, 'basketballSprite');
         this.basketballSprite.animations.add('shootBall', [0,1,2,3]);
     }
 
@@ -143,8 +141,8 @@ class Main extends Phaser.State {
     
     addScore(){
         if(!this.isNewBasketball) return;
-        this.score += 2;
-        this.scoreText.text = 'Points: ' + this.score;
+        _score+= 2;
+        this.scoreText.text = 'Points: ' + _score;
         this.isNewBasketball = false;
 
         this.counter += 5;
@@ -270,7 +268,7 @@ class Main extends Phaser.State {
         var newY = Math.cos(theta) * 135;
         
         this.smallBasketball.x=15 + newX;
-        this.smallBasketball.y=400 + newY;
+        this.smallBasketball.y=500 + newY;
     }
 
     transictionToGameOver(){
