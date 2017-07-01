@@ -4,27 +4,37 @@ class Menu extends Phaser.State {
         
         this.add.text(
             100, 
-            50, 
+            40, 
             "Storm Basket",
             {
-                font: "50px",
+                font: "36px",
                 fill: "#999999"
             }
         );
 
+        let mainMenuText = `
+            Basketball game Designed by Zelig880. \n
+            Score as many basket as possible to achieve the highest score.\n
+            Click the LEFT ARROW to select the power of the shoot\n
+            Click the RIGHT ARROW to select the angle of the shoot\n
+            CLick Space to reset the ball or wait 5 seconds.\n
+            Every basket will award 5 seconds\n
+            The game is over when the time is UP.
+        `;
+
         this.add.text(
             100,
-            150,
-            "Indie game about basketball. \nScore as many basket as possible to achieve the highest score.",
+            85,
+            mainMenuText,
             {
-                font: "24px",
+                font: "16px",
                 fill: "#999999"
             }
         );
 
         this.add.text(
             100,
-            250,
+            500,
             "PRESS SPACE TO BEGIN",
             {
                 font: "24px",
