@@ -15,9 +15,9 @@ class Menu extends Phaser.State {
         let mainMenuText = `
             Basketball game Designed by Zelig880. \n
             Score as many basket as possible to achieve the highest score.\n
-            Click the LEFT ARROW to select the power of the shoot\n
-            Click the RIGHT ARROW to select the angle of the shoot\n
-            CLick Space to reset the ball or wait 5 seconds.\n
+            Use the Arrow key to:\n
+            - Select Strenght of shoot\n
+            - Choose the angle of the shoow\n
             Every basket will award 5 seconds\n
             The game is over when the time is UP.
         `;
