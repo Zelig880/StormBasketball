@@ -3,8 +3,15 @@ const MAX_ACCELERATION = 500;
 const MIN_ACCELERATION = 0;
 const MIN_MULTIPLIER = 0;
 const MAX_MULTIPLIER = 200;
-const DEBUG = true;
+const DEBUG = false;
+const states = [
+    "ready",
+    "power",
+    "angle",
+    "shoot"
+    ];
 var _score = 0;
+var _currentState = 0;
 
 class Main extends Phaser.State {
 
@@ -13,13 +20,12 @@ class Main extends Phaser.State {
         this.cursors;
         this.scoreText;
         this.isNewBasketball = true;
-        this.ballIsShot = false;
         this.counterStarted = false;
         this.accelerationCounterStarted = false;
         this.accelerationState = "increase";
         this.angleCounterStarted = false;
         this.angleState = "increase";
-        this.counter = 10;
+        this.counter = 30;
         this.acceleration = 0;
         this.multiplierX = 1;
         this.multiplierY = 1;
@@ -49,7 +55,7 @@ class Main extends Phaser.State {
         if(DEBUG) this.angleText = this.add.text(50, 75, "Angle: 0", { fontSize: '24px', fill: 'green' });
         
         this.scoreText = this.add.text(50, 15, 'Points: 0', { fontSize: '32px', fill: '#ffffff' });    
-        this.counterText = this.add.text(200, 15, 'Seconds: 60', { font: "32px", fill: "#ffffff" });
+        this.counterText = this.add.text(200, 15, 'Seconds: 30', { font: "32px", fill: "#ffffff" });
         this.extraSecondsText = this.add.text(375, 15, "+5 Sec", { fontSize: '32px', fill: 'red' });
     
         //SET VISIBILITY AND ANIMATIONS
@@ -67,9 +73,7 @@ class Main extends Phaser.State {
             this.scoreBar, 
             this.backboard]
             );
-        this.physics.arcade.gravity.y = 250;
-        this.leftSideRing.body.setCircle(6);
-        this.rightSideRing.body.setCircle(6);
+        this.physics.arcade.gravity.y = 350;
         this.basketball.body.allowGravity = false;
         this.basketball.body.collideWorldBounds = false;
         this.backboard.body.immovable = true;
@@ -88,9 +92,9 @@ class Main extends Phaser.State {
         this.reset = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     
         //KEYBOARD ACTIONS
-        this.cursors.down.onDown.add(this.actionShootBall, this);
-        this.cursors.left.onDown.add(this.triggerAccelerationCounter, this);
-        this.cursors.right.onDown.add(this.triggerAngleCounter, this);
+        this.cursors.down.onDown.add(this.actionStateAndUpdateStateValue, this);
+        this.cursors.left.onDown.add(this.actionStateAndUpdateStateValue, this);
+        this.cursors.right.onDown.add(this.actionStateAndUpdateStateValue, this);
         this.reset.onDown.add(this.resetStage, this);
 
         //LOOP EVENTS
@@ -110,6 +114,28 @@ class Main extends Phaser.State {
 
     }
 
+    actionStateAndUpdateStateValue(){
+        if(states[_currentState] === 'shoot') return;
+        if(_currentState < states.length){
+
+            switch (states[_currentState]) {
+                case "ready":
+                    this.triggerAccelerationCounter();
+                    break;
+            
+                case "power":
+                    this.triggerAccelerationCounter();
+                    this.triggerAngleCounter();
+                    break;                
+                case "angle":
+                    this.triggerAngleCounter();
+                    this.actionShootBall();
+                    break;          
+            }
+            _currentState++;
+        }
+    }
+
     setBasketballSprite(){
         
         this.basketballSprite = this.add.sprite(25, 345, 'basketballSprite');
@@ -117,15 +143,16 @@ class Main extends Phaser.State {
     }
 
     actionShootBall(){
+
         this.counterStarted = true;
-        this.ballIsShot = true;
+        _currentState = 3;//ball shot
         this.player.animations.play("shoot", 10, false);
         this.basketballSprite.animations.play("shootBall", 10, false).onComplete.add(this.shootBall, this);
         this.resetTimer = this.time.events.add(Phaser.Timer.SECOND * 5, this.resetStage, this);
     }
 
     resetStage(){
-        this.add.tween(this.basketball).to( { x: 25, y:250 }, 1, Phaser.Easing.Linear.None, true);
+        this.add.tween(this.basketball).to( { x: 25, y:350 }, 1, Phaser.Easing.Linear.None, true);
         this.basketball.visible = false;
         this.basketball.body.allowGravity = false;
         this.basketball.body.immovable = true;
@@ -138,7 +165,7 @@ class Main extends Phaser.State {
 
         this.setBasketballSprite();
         this.isNewBasketball = true;
-        this.ballIsShot = false;
+        _currentState = 0;
     }
     
     addScore(){
@@ -222,6 +249,7 @@ class Main extends Phaser.State {
     }
 
     triggerAccelerationCounter(){
+
         if(this.accelerationCounterStarted){
             this.accelerationCounterStarted = false;
             this.progressBar.animations.stop(false);
@@ -253,6 +281,7 @@ class Main extends Phaser.State {
     }
 
     triggerAngleCounter(){
+
         if(this.angleCounterStarted){
             this.angleCounterStarted = false;
         }else{
